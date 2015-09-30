@@ -2,6 +2,7 @@ class Automato(object):
 
 	def __init__(self):
 		self.atual = ''
+		self.inicial = ''
 		self.estados = []
 		self.finais  = []
 		self.trans   = []
@@ -26,6 +27,15 @@ class Automato(object):
 	def setInicial(self, est):
 		if est in self.estados:
 			self.atual = est
+			self.inicial = est
+			return True
+
+		return False
+
+	#So pode ser utilizado se ja usado o setInicial
+	def resetInicial(self):
+		if self.inicial != '':
+			self.atual = self.inicial
 			return True
 
 		return False
