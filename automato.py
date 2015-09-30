@@ -39,8 +39,8 @@ class Automato(object):
 		return False
 
 	#Modifica o estado atual do automato, retorna falso se transicao invalida
-	def doTrans(self, est, simbolo):
-		self.atual = hasTrans(est, simbolo)
+	def doTrans(self, simbolo):
+		self.atual = self.hasTrans(self.atual, simbolo)
 		return self.atual
 
 	#Retorna verdadeiro se automato esta em um estado final
@@ -55,3 +55,6 @@ class Automato(object):
 
 	def printTrans(self):
 		print self.trans
+
+	def printAtual(self):
+		print self.atual
