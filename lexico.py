@@ -28,13 +28,21 @@ class Lexico(object):
 
 	#Retorna token se verdadeiro ou tupla com linha e coluna do erro, ex: ('ERRO', linha, coluna)
 	def scanner(self):
+		if self.linha_atual == len(self.arq):
+			return 'EOF'
 		token = ''
 		self.aut.resetInicial()
 		for i in range(self.col_atual, len(self.arq[self.linha_atual])):
 			aux = self.arq[self.linha_atual][self.col_atual]
-			if aux in self.delimitadores and token != '':
+			if (aux in self.delimitadores and token != '') or (self.col_atual == len(self.arq[self.linha_atual])-1):
+				if self.col_atual == len(self.arq[self.linha_atual])-1:
+					self.linha_atual += 1
+					self.col_atual = 0
 				if self.aut.isFinal():
-					return token
+					if self.linha_atual != len(self.arq):
+						return token
+					else:
+						return token+aux
 				else:
 					return ('ERRO', self.linha_atual, self.col_atual)
 
@@ -48,13 +56,8 @@ class Lexico(object):
 
 				self.col_atual += 1
 
-			#Fim da linha
-			if self.col_atual == len(self.arq[self.linha_atual])-1:
-				self.linha_atual += 1
-				self.col_atual = 0
-				if self.linha_atual == len(self.arq):
-					return 'EOF'
 
+			
 			
 		return token
 
