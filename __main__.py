@@ -1,40 +1,32 @@
-from automato import Automato
+from lexico import Lexico
 
-aut = Automato()
+lex = Lexico("inputs.in")
 
 #Insere estados
-aut.insereEstado("q0")
-aut.insereEstado("q1", final=True)
-aut.insereEstado("q2")
-aut.insereEstado("q3")
+lex.insereEstado("q0", final=True)
+lex.insereEstado("q1")
+lex.insereEstado("q2")
+lex.insereEstado("q3")
 
 #Insere transicoes
-aut.insereTrans("q0", "q2", "->")
-aut.insereTrans("q2", "q3", "->")
-aut.insereTrans("q3", "q1", "----")
+lex.insereTrans("q0", "q0", "o")
+lex.insereTrans("q0", "q0", "i")
+lex.insereTrans("q2", "q3", "->")
+lex.insereTrans("q3", "q1", "----")
 
 #Seta estado inicial
-aut.setInicial("q0")
+lex.setInicial("q0")
+lex.insereDelimitador(" ")
 
-aut.printAtual()
-
-#Faz transicoes
-aut.doTrans("->")
-
-aut.printAtual()
-
-aut.doTrans("->")
-
-aut.printAtual()
-print aut.isFinal()
-
-aut.doTrans("----")
-
-aut.printAtual()
-print aut.isFinal()
+#Le do arquivo
+var = lex.scanner()
+print var
+while (var != 'EOF' and var[0] != 'ERRO'):
+	var = lex.scanner()
+	print var
 
 '''
-aut.printEstados()
-aut.printFinais()
-aut.printTrans()
+lex.printEstados()
+lex.printFinais()
+lex.printTrans()
 '''

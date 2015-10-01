@@ -31,25 +31,31 @@ class Lexico(object):
 		token = ''
 		self.aut.resetInicial()
 		for i in range(self.col_atual, len(self.arq[self.linha_atual])):
-			aux = self.arq[self.linha_atual][self.coluna_atual]
-			if aux in delimitadores and token != '':
+			aux = self.arq[self.linha_atual][self.col_atual]
+			print "Token: ", token
+			print "Aux: ", aux
+			if aux in self.delimitadores and token != '':
 				if self.aut.isFinal():
 					return token
 				else:
-					return ('ERRO', self.linha_atual, self.coluna_atual)
+					return ('ERRO', self.linha_atual, self.col_atual)
 
 			else:
-				token += aux
-				valid = self.aut.doTrans(aux)
+				valid = True
+				if aux not in self.delimitadores:
+					token += aux
+					valid = self.aut.doTrans(aux)
 				if not valid:
-					return ('ERRO', self.linha_atual, self.coluna_atual)
+					return ('ERRO', self.linha_atual, self.col_atual)
 
-				self.coluna_atual += 1
+				self.col_atual += 1
 
 			#Fim da linha
-			if self.coluna_atual == len(self.arq[self.linha_atual])-1:
+			if self.col_atual == len(self.arq[self.linha_atual])-1:
 				self.linha_atual += 1
-				self.coluna_atual = 0
+				self.col_atual = 0
+				if self.linha_atual == len(self.arq):
+					return 'EOF'
 
 			
 		return token
