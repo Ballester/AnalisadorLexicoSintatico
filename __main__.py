@@ -8,6 +8,11 @@ lex.insereEstado("chaves", final=True)
 lex.insereEstado("id", final=True)
 lex.insereEstado("op", final=True)
 
+#Palavras reservadas
+lex.insereReservada("for")
+lex.insereReservada("while")
+lex.insereReservada("if")
+
 #Insere transicoes
 lex.insereTrans("q0", "id", "a-z")
 lex.insereTrans("id", "id", "a-z")
@@ -18,16 +23,9 @@ lex.insereTrans("q0", "op", "+")
 lex.insereTrans("q0", "op", "-")
 lex.insereTrans("q0", "op", "*")
 
+#Chaves
 lex.insereTrans("q0", "chaves", "{")
 lex.insereTrans("q0", "chaves", "}")
-
-lex.insereTrans("q0", "q0", "i")
-lex.insereTrans("q2", "q3", "-")
-lex.insereTrans("q3", "q1", "-")
-
-lex.insereReservada("for")
-lex.insereReservada("while")
-lex.insereReservada("if")
 
 
 #Seta estado inicial
