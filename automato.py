@@ -61,6 +61,9 @@ class Automato(object):
 		self.atual = self.hasTrans(self.atual, simbolo)
 		return self.atual
 
+	def returnAtual(self):
+		return self.atual
+
 	#Retorna verdadeiro se automato esta em um estado final
 	def isFinal(self):
 		return self.atual in self.finais

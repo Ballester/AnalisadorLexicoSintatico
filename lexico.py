@@ -6,6 +6,7 @@ class Lexico(object):
 	def __init__(self, arq):
 		self.reservadas = []
 		self.delimitadores = []
+		self.delimitadoresUteis = []
 		self.aut = Automato()
 		self.arq = open(arq).readlines()
 		self.linha_atual = 0
@@ -40,9 +41,15 @@ class Lexico(object):
 					self.col_atual = 0
 				if self.aut.isFinal():
 					if self.linha_atual != len(self.arq):
-						return token
+						if token in self.reservadas:
+							return (token, "reservada")
+						else:
+							return (token, self.aut.returnAtual())
 					else:
-						return token+aux
+						if token+aux in self.reservadas:
+							return (token+aux, "reservadas")
+						else:
+							return (token+aux, self.aut.returnAtual())
 				else:
 					return ('ERRO', self.linha_atual, self.col_atual)
 
@@ -56,9 +63,6 @@ class Lexico(object):
 
 				self.col_atual += 1
 
-
-			
-			
 		return token
 
 
