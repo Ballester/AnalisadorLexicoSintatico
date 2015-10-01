@@ -32,8 +32,6 @@ class Lexico(object):
 		self.aut.resetInicial()
 		for i in range(self.col_atual, len(self.arq[self.linha_atual])):
 			aux = self.arq[self.linha_atual][self.col_atual]
-			print "Token: ", token
-			print "Aux: ", aux
 			if aux in self.delimitadores and token != '':
 				if self.aut.isFinal():
 					return token

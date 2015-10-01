@@ -7,6 +7,11 @@ class Automato(object):
 		self.finais  = []
 		self.trans   = []
 
+	#Range entre chars
+	def char_range(self, c1, c2):
+	    for c in xrange(ord(c1), ord(c2)+1):
+	        yield chr(c)
+
 	#Retorna verdadeiro se conseguiu inserir
 	def insereEstado(self, nome, final=False):
 		self.estados.append(nome)
@@ -17,7 +22,10 @@ class Automato(object):
 
 	#Retorna verdadeiro se conseguiu inserir
 	def insereTrans(self, est1, est2, simbolo):
-		if est1 in self.estados and est2 in self.estados:
+		if len(simbolo) > 1:
+			for i in self.char_range(simbolo[0], simbolo[2]):
+				self.trans.append((est1, est2, i))
+		elif est1 in self.estados and est2 in self.estados:
 			self.trans.append((est1, est2, simbolo))
 			return True
 

@@ -9,14 +9,15 @@ lex.insereEstado("q2")
 lex.insereEstado("q3")
 
 #Insere transicoes
-lex.insereTrans("q0", "q0", "o")
+lex.insereTrans("q0", "q0", "a-z")
 lex.insereTrans("q0", "q0", "i")
-lex.insereTrans("q2", "q3", "->")
-lex.insereTrans("q3", "q1", "----")
+lex.insereTrans("q2", "q3", "-")
+lex.insereTrans("q3", "q1", "-")
 
 #Seta estado inicial
 lex.setInicial("q0")
 lex.insereDelimitador(" ")
+lex.insereDelimitador("\n")
 
 #Le do arquivo
 var = lex.scanner()
