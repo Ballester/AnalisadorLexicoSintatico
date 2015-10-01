@@ -1,8 +1,6 @@
-from lexico import Lexico
+from sintatico import Sintatico
 
 lex = Lexico("inputs.in")
-
-
 
 #Le do arquivo
 var = lex.scanner()
