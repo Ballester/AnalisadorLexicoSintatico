@@ -51,7 +51,7 @@ class Lexico(object):
 						else:
 							return (token+aux, self.aut.returnAtual())
 				else:
-					return ('ERRO', self.linha_atual, self.col_atual)
+					return ('ERRO - Identificador Invalido', self.linha_atual, self.col_atual)
 
 			else:
 				valid = True
@@ -59,7 +59,7 @@ class Lexico(object):
 					token += aux
 					valid = self.aut.doTrans(aux)
 				if not valid:
-					return ('ERRO', self.linha_atual, self.col_atual)
+					return ('ERRO - Transicao Invalida', self.linha_atual, self.col_atual)
 
 				self.col_atual += 1
 
