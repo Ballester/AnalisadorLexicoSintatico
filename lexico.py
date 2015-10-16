@@ -6,7 +6,6 @@ class Lexico(object):
 	def __init__(self, arq):
 		self.reservadas = []
 		self.delimitadores = []
-		self.delimitadoresUteis = []
 		self.aut = Automato()
 		self.arq = open(arq).readlines()
 		self.linha_atual = 0
@@ -29,40 +28,54 @@ class Lexico(object):
 
 	#Retorna token se verdadeiro ou tupla com linha e coluna do erro, ex: ('ERRO', linha, coluna)
 	def scanner(self):
+		self.aut.resetInicial()
+		token = ''
 		if self.linha_atual == len(self.arq):
 			return 'EOF'
-		token = ''
-		self.aut.resetInicial()
 		for i in range(self.col_atual, len(self.arq[self.linha_atual])):
 			aux = self.arq[self.linha_atual][self.col_atual]
-			if (aux in self.delimitadores and token != '') or (self.col_atual == len(self.arq[self.linha_atual])-1):
-				if self.col_atual == len(self.arq[self.linha_atual])-1:
-					self.linha_atual += 1
-					self.col_atual = 0
+			if (aux in self.delimitadores and token != '') or (aux == '\n'):
 				if self.aut.isFinal():
-					if self.linha_atual != len(self.arq):
-						if token in self.reservadas:
-							return (token, "reservada")
-						else:
-							return (token, self.aut.returnAtual())
-					else:
-						if token+aux in self.reservadas:
-							return (token+aux, "reservadas")
-						else:
-							return (token+aux, self.aut.returnAtual())
+					if aux == '\n':
+						self.linha_atual += 1
+						self.col_atual = 0
+
+					if token in self.reservadas:
+						return (token, "reservada")
+					else:						
+						return (token, self.aut.returnAtual())
+
 				else:
 					return ('ERRO - Identificador Invalido', self.linha_atual, self.col_atual)
 
 			else:
 				valid = True
 				if aux not in self.delimitadores:
-					token += aux
-					valid = self.aut.doTrans(aux)
-				if not valid:
-					return ('ERRO - Transicao Invalida', self.linha_atual, self.col_atual)
+					valid = self.aut.hasTrans(self.aut.returnAtual(), aux)
+					if valid:
+						token += aux
+						self.aut.doTrans(aux)
+
+					if not valid:
+						if self.aut.isFinal():
+							if token in self.reservadas:
+								return (token, "reservada")
+							else:
+								return (token, self.aut.returnAtual())
+						else:
+							return ('ERRO - Transicao Invalida', self.linha_atual, self.col_atual)
 
 				self.col_atual += 1
 
-		return token
+		#Entra somente no fim do arquivo
+		self.linha_atual += 1
+		if self.aut.isFinal():
+			if token in self.reservadas:
+				return (token, "reservada")
+			else:
+				return (token, self.aut.returnAtual())
+		else:
+			return ('ERRO - Identificador Invalido', self.linha_atual, self.col_atual)
+
 
 

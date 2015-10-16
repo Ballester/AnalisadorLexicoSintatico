@@ -5,6 +5,7 @@ class Sintatico(object):
 	def __init__(self):
 		self.regras = []
 
+	'''
 	#Inicializa analisador lexico
 	def initLexico(self, arq):
 		self.lex = Lexico("inputs.in")
@@ -45,8 +46,9 @@ class Sintatico(object):
 		#Insere delimitadores
 		self.lexinsereDelimitador(" ")
 		self.lexinsereDelimitador("\n")
+	'''
 
-	#Insere regra de transicao: B é n-upla de transicoes da gramatica
+	#Insere regra de transicao: B eh n-upla de transicoes da gramatica
 	def insereRegra(self, A, B):
 		self.regras.append((A, B))
 
