@@ -1,5 +1,5 @@
 from lexico import Lexico
-
+#teste
 class Sintatico(object):
 	
 	def __init__(self):
