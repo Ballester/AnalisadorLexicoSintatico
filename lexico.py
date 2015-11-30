@@ -46,7 +46,7 @@ class Lexico(object):
 						return (token, self.aut.returnAtual())
 
 				else:
-					return ('ERRO - Identificador Invalido', self.linha_atual, self.col_atual)
+					raise Exception('ERRO - Identificador Invalido', self.linha_atual, self.col_atual)
 
 			else:
 				valid = True
@@ -63,7 +63,7 @@ class Lexico(object):
 							else:
 								return (token, self.aut.returnAtual())
 						else:
-							return ('ERRO - Transicao Invalida', self.linha_atual, self.col_atual)
+							raise Exception('ERRO - Transicao Invalida', self.linha_atual, self.col_atual)
 
 				self.col_atual += 1
 
@@ -75,7 +75,7 @@ class Lexico(object):
 			else:
 				return (token, self.aut.returnAtual())
 		else:
-			return ('ERRO - Identificador Invalido', self.linha_atual, self.col_atual)
+			raise Exception('ERRO - Identificador Invalido', self.linha_atual, self.col_atual)
 
 
 

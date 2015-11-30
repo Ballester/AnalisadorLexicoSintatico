@@ -2,82 +2,110 @@ from lexico import Lexico
 #teste
 class Sintatico(object):
 	
-	def __init__(self):
-		self.regras = []
+	def __init__(self, file):
+		self.lex = Lexico(file)
+		self.tk = ''
 
-	'''
-	#Inicializa analisador lexico
-	def initLexico(self, arq):
-		self.lex = Lexico("inputs.in")
+	def insereEstado(self, est, final=False):
+		self.lex.insereEstado(est, final)
 
-		#Insere estados
-		self.lexinsereEstado("q0")
-		self.lexinsereEstado("chaves", final=True)
-		self.lexinsereEstado("id", final=True)
-		self.lexinsereEstado("op", final=True)
-		self.lexinsereEstado("num", final=True)
+	def insereTrans(self, est1, est2, simbolo):
+		self.lex.insereTrans(est1, est2, simbolo)
 
-		#Palavras reservadas
-		self.lexinsereReservada("for")
-		self.lexinsereReservada("while")
-		self.lexinsereReservada("if")
+	def setInicial(self, est):
+		self.lex.setInicial(est)
 
-		#Identificadores
-		self.lexinsereTrans("q0", "id", "a-z")
-		self.lexinsereTrans("id", "id", "a-z")
-		self.lexinsereTrans("id", "id", "0-9")
+	def insereDelimitador(self, dele):
+		self.lex.delimitadores.append(dele)
 
-		#Operacoes
-		self.lexinsereTrans("q0", "op", "+")
-		self.lexinsereTrans("q0", "op", "-")
-		self.lexinsereTrans("q0", "op", "*")
+	def insereReservada(self, res):
+		self.lex.reservadas.append(res)
 
-		#Chaves
-		self.lexinsereTrans("q0", "chaves", "{")
-		self.lexinsereTrans("q0", "chaves", "}")
+	def le_token(self):
+		self.tk = self.lex.scanner()
+		return self.tk
 
-		#Numeros
-		self.lexinsereTrans("q0", "num", "0-9")
-		self.lexinsereTrans("num", "num", "0-9")
 
-		#Seta estado inicial
-		self.lexsetInicial("q0")
+	def PROG(self):
+		le_token()
 
-		#Insere delimitadores
-		self.lexinsereDelimitador(" ")
-		self.lexinsereDelimitador("\n")
-	'''
+		if LISTACMD():
+			if self.tk == "EOF":
+				return True
 
-	#Insere regra de transicao: B eh n-upla de transicoes da gramatica
-	def insereRegra(self, A, B):
-		self.regras.append((A, B))
+	def LISTACMD(self):
+		if CMD():
+			if self.tk == "ENDL":
+				le_token()
+				if LISTACMD():
+					return True
 
-	#Executa a regra: N o proximo eh nao terminal, T o proximo eh trminal
-	def executaRegra(self, A, token):
-		result_total = False
-		for regra in self.regras:
-			if regra[0][0] == A:
+		else:
+			return True
 
-				#Itera sobre regras
-				for j in range(0, len(regra[0][1])):
-					last_token = token
-					result = True
+	def CMD(self):
+		if DEC():
+			return True
 
-					#Itera sobre as operacoes da regra
-					for i in range(0, len(regra[0][1])-1, 2):
-						if regra[0][1][i] == 'N':
-							result = result and self.executaRegra(regra[0][0][i+1], last_token)
-						elif regra[0][1][i] == 'T':
-							if last_token == regra[0][1][i+1]:
-								last_token =  self.lex.scanner()
+		elif ATRIB():
+			return True
 
-							else:
-								return False
+		elif COND():
+			return True
 
-					result_total = result_total or result
+		elif ESC():
+			return True
+
+		elif LEI():
+			return True
+
+		else:
+			return 'ERRO - Sintatico'
+
+
+	def DEC(self):
+		if DECl():
+			le_token()
+			if LVAR():
+				return True
+			else:
+				return False
+		else:
+			return False
+
+	def DECl(self):
+		if self.tk == 'local':
+			le_token()
+			return True
+		else:
+			return True
+
+	# def ID(self):
+	# 	if self.tk == 'ari':
+	# 		self.tk = le_token()
+	# 		return True
+	# 	elif self.tk == 'bool':
+	# 		self.tk = le_token()
+	# 		return True
+	# 	else:
+	# 		return False
+
+	def LVAR(self):
+		if self.tk == 'var':
+			le_token()
 			
-				return result_total		
 
+
+	
+
+
+
+
+
+
+
+
+	
 
 
 
