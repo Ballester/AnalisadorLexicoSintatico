@@ -78,8 +78,8 @@ sin.insereDelimitador(" ")
 # sin.insereDelimitador("\n")
 
 #nome da regra e lista
-sin.insereRegra('A', [('T', 'virg'), ('T', 'virg')])
-sin.insereRegra('A', [('T', 'id'), ('T', 'virg')])
+sin.insereRegra('A', [('N', 'B')])
+sin.insereRegra('B', [('T', 'id'), ('T', 'oi')])
 
 
 #Le do arquivo

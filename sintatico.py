@@ -50,7 +50,7 @@ class Sintatico(Lexico):
 							break
 
 					elif self.regras[idx_now][i][0] == 'N':
-						if executaRegra(regras[idx_now][i][1]):
+						if self.executaRegra(self.regras[idx_now][i][1]):
 							last_rule = True
 
 						else:
