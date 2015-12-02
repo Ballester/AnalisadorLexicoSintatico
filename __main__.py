@@ -77,20 +77,14 @@ sin.setInicial("q0")
 sin.insereDelimitador(" ")
 # sin.insereDelimitador("\n")
 
+#nome da regra e lista
+sin.insereRegra('A', [('T', 'virg'), ('T', 'virg')])
+sin.insereRegra('A', [('T', 'id'), ('T', 'virg')])
+
 
 #Le do arquivo
-var = sin.le_token()
-# print var
-erro = False
-while (var != 'EOF' and not erro):
-	if len(var) > 1:
-		if var[0][0:4] == 'ERRO':
-			print var
-			erro = True
-		else:
-			var = sin.le_token()
-			print var
-
+sin.le_token()
+print sin.executaRegra('A')
 	
 		
 '''

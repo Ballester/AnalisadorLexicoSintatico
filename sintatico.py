@@ -1,113 +1,62 @@
 from lexico import Lexico
-#teste
-class Sintatico(object):
+from automato import Automato
+#todo colocar palavra vazia
+#funciona se for uma gramatica fatorada a esquerda
+class Sintatico(Lexico):
 	
 	def __init__(self, file):
-		self.lex = Lexico(file)
+		# self.lex = Lexico(file)
 		self.tk = ''
-
-	def insereEstado(self, est, final=False):
-		self.lex.insereEstado(est, final)
-
-	def insereTrans(self, est1, est2, simbolo):
-		self.lex.insereTrans(est1, est2, simbolo)
-
-	def setInicial(self, est):
-		self.lex.setInicial(est)
-
-	def insereDelimitador(self, dele):
-		self.lex.delimitadores.append(dele)
-
-	def insereReservada(self, res):
-		self.lex.reservadas.append(res)
+		self.regras = []
+		self.nome_regras = []
+		self.reservadas = []
+		self.delimitadores = []
+		self.aut = Automato()
+		self.arq = open(file).readlines()
+		self.linha_atual = 0
+		self.col_atual = 0
 
 	def le_token(self):
-		self.tk = self.lex.scanner()
+		self.tk = self.scanner()
 		return self.tk
 
+	#nome regra is the variable being used
+	#regra is a list of tuples, each tuple is a variable followed by wether it is a rule or a terminal
+	#T is for terminal N is for a rule
+	def insereRegra(self, nome_regra, regra):
+		self.nome_regras.append(nome_regra)
+		self.regras.append(regra)
 
-	def PROG(self):
-		le_token()
+	def executaRegra(self, nome_regra):
+		
+		idx = [i for i, x in enumerate(self.nome_regras) if x == nome_regra]
+		if idx == []:
+			raise Exception('ERRO - Sintatico, regra invalida')
 
-		if LISTACMD():
-			if self.tk == "EOF":
-				return True
+		last_rule = False	#checks if last rule was used or not
+		return_value = False #used to return whether it worked or not
+		for idx_now in idx:
+			if not last_rule:
+				for i in range(0, len(self.regras[idx_now])):
+					
+					#Check if is a terminal
+					if self.regras[idx_now][i][0] == 'T':
+						#Check if token is correct
+						if self.regras[idx_now][i][1] == self.tk[1]:
+							self.le_token()
+							last_rule = True
 
-	def LISTACMD(self):
-		if CMD():
-			if self.tk == "ENDL":
-				le_token()
-				if LISTACMD():
-					return True
+						else:
+							break
 
-		else:
-			return True
+					elif self.regras[idx_now][i][0] == 'N':
+						if executaRegra(regras[idx_now][i][1]):
+							last_rule = True
 
-	def CMD(self):
-		if DEC():
-			return True
+						else:
+							break
 
-		elif ATRIB():
-			return True
+				else:
+					return_value = True
 
-		elif COND():
-			return True
-
-		elif ESC():
-			return True
-
-		elif LEI():
-			return True
-
-		else:
-			return 'ERRO - Sintatico'
-
-
-	def DEC(self):
-		if DECl():
-			le_token()
-			if LVAR():
-				return True
-			else:
-				return False
-		else:
-			return False
-
-	def DECl(self):
-		if self.tk == 'local':
-			le_token()
-			return True
-		else:
-			return True
-
-	# def ID(self):
-	# 	if self.tk == 'ari':
-	# 		self.tk = le_token()
-	# 		return True
-	# 	elif self.tk == 'bool':
-	# 		self.tk = le_token()
-	# 		return True
-	# 	else:
-	# 		return False
-
-	def LVAR(self):
-		if self.tk == 'var':
-			le_token()
-			
-
-
-	
-
-
-
-
-
-
-
-
-	
-
-
-
-
-
+		return return_value
