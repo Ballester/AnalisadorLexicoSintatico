@@ -30,23 +30,29 @@ class Lexico(object):
 	def scanner(self):
 		self.aut.resetInicial()
 		token = ''
+
+		#verifica se EOF
 		if self.linha_atual == len(self.arq):
-			return 'EOF'
+			return ('', 'EOF')
+
+		#verifica se newline
+		if self.arq[self.linha_atual][self.col_atual] == '\n':
+			self.linha_atual += 1
+			self.col_atual = 0
+			return('newline', 'QL')
+
+		#cria os tokens
 		for i in range(self.col_atual, len(self.arq[self.linha_atual])):
 			aux = self.arq[self.linha_atual][self.col_atual]
-			if (aux in self.delimitadores and token != '') or (aux == '\n'):
+			if (aux in self.delimitadores and token != ''):
 				if self.aut.isFinal():
-					if aux == '\n':
-						self.linha_atual += 1
-						self.col_atual = 0
-
 					if token in self.reservadas:
-						return (token, "reservada")
+						return (token, "RES")
 					else:						
 						return (token, self.aut.returnAtual())
 
 				else:
-					raise Exception('ERRO - Identificador Invalido', self.linha_atual, self.col_atual)
+					raise Exception('ERRO - Lexico, identificador invalido', self.linha_atual, self.col_atual)
 
 			else:
 				valid = True
@@ -59,11 +65,11 @@ class Lexico(object):
 					if not valid:
 						if self.aut.isFinal():
 							if token in self.reservadas:
-								return (token, "reservada")
+								return (token, "RES")
 							else:
 								return (token, self.aut.returnAtual())
 						else:
-							raise Exception('ERRO - Transicao Invalida', self.linha_atual, self.col_atual)
+							raise Exception('ERRO - Lexico, estado nao eh final', self.linha_atual, self.col_atual)
 
 				self.col_atual += 1
 
@@ -71,11 +77,11 @@ class Lexico(object):
 		self.linha_atual += 1
 		if self.aut.isFinal():
 			if token in self.reservadas:
-				return (token, "reservada")
+				return (token, "RES")
 			else:
 				return (token, self.aut.returnAtual())
 		else:
-			raise Exception('ERRO - Identificador Invalido', self.linha_atual, self.col_atual)
+			raise Exception('ERRO - Lexico, identificador invalido', self.linha_atual, self.col_atual)
 
 
 

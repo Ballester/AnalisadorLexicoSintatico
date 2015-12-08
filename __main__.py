@@ -1,30 +1,96 @@
 from sintatico import Sintatico
+import networkx as nx
+import matplotlib.pyplot as plt
 
-sin = Sintatico("inputs.in")
+sin = Sintatico("inputs.in", debugging=True)
+edge_labels = {}
 
-#Insere estados
-sin.insereEstado("q0")
+#READ GRAMATICA FROM FILE
+fgrammar = open('gramatica.txt')
+fauto    = open('automato.txt')
 
-sin.insereEstado("chavesA", final=True)
-sin.insereEstado("chavesB", final=True)
-sin.insereEstado("parenA", final=True)
-sin.insereEstado("parenB", final=True)
+grammar = fgrammar.readlines()
+auto    = fauto.readlines()
 
-sin.insereEstado("num", final=True)
-sin.insereEstado("id", final=True)
-sin.insereEstado("op", final=True)
-sin.insereEstado("opMenos", final=True)
-sin.insereEstado("pot", final=True)
-sin.insereEstado("logUn", final=True)
-sin.insereEstado("logBin", final=True)
+#Example: prog -> listcmd <EOF>
+#Nome da regra -> valores (entre <> sao terminais)
+for i in grammar:
+    i = i.split()
+    regra = []
+    for j in range(2, len(i)):
+        if i[j] == 'lambda':
+            regra.append(('E', i[j].split('\n')[0]))
+        elif i[j][0] == '<':
+            regra.append(('T', i[j][1:len(i[j])-1]))
+        else:
+            regra.append(('N', i[j]))
+    sin.insereRegra(i[0], regra)
 
-sin.insereEstado("sep_func", final=True)
-sin.insereEstado("virg", final=True)
-sin.insereEstado("att", final=True)
-sin.insereEstado('aspas', final=True)
+#<-- Lista de estados -->
+#(q0) <q1> <q2> q3
+#estado inicial, estado final, estado final, estado normal
+#<-- Lista de transicoes -->
+#q0 q1 a-z
+#q0 q1 b
+#q0 q3 .
+G = nx.Graph()
+read_estados = False
+read_trans   = False
+for i in auto:
+    #troca se esta lendo estados ou transicoes
+    if i == '<-- Lista de estados -->\n':
+        read_estados = True
+        read_trans = False
+        continue
+    if i == '<-- Lista de transicoes -->\n':
+        read_estados = False
+        read_trans = True
+        continue
 
-sin.insereEstado("comp", final=True)
-sin.insereEstado("comp_final", final=True)
+    if read_estados:
+        i = i.split()
+        for j in i:
+            if j[0] == '(':
+                j = j[1:len(j)-1]
+                sin.insereEstado(j)
+                sin.setInicial(j)
+            elif j[0] == '<':
+                j = j[1:len(j)-1]
+                sin.insereEstado(j, final=True)
+            else:
+                sin.insereEstado(j)
+
+            G.add_node(j)
+    
+    elif read_trans:
+        i = i.split()
+        for j in range(2, len(i)):
+            sin.insereTrans(i[0], i[1], i[j])
+
+        G.add_edge(i[0], i[1])
+        edge_labels.update({(i[0], i[1]): i[j]})
+
+node_size=300
+node_color='blue'
+node_alpha=0.3
+node_text_size=10
+edge_color='blue'
+edge_alpha=0.3
+edge_tickness=1
+edge_text_pos=0.3
+text_font='sans-serif'
+
+graph_pos=nx.spring_layout(G)
+nx.draw_networkx_nodes(G,graph_pos,node_size=node_size, 
+                           alpha=node_alpha, node_color=node_color)
+nx.draw_networkx_edges(G,graph_pos,width=edge_tickness,
+                           alpha=edge_alpha,edge_color=edge_color)
+nx.draw_networkx_labels(G, graph_pos,font_size=node_text_size,
+                            font_family=text_font)
+nx.draw_networkx_edge_labels(G, graph_pos, edge_labels=edge_labels,
+                            label_pos=edge_text_pos)
+
+plt.show()
 
 #Palavras reservadas
 sin.insereReservada("if")
@@ -33,58 +99,18 @@ sin.insereReservada("local")
 sin.insereReservada("true")
 sin.insereReservada("false")
 sin.insereReservada("nil")
-
-#Identificadores
-sin.insereTrans("q0", "id", "a-z")
-sin.insereTrans("id", "id", "a-z")
-sin.insereTrans("id", "id", "0-9")
-sin.insereTrans("id", "id", "_")
-
-#Separadores
-sin.insereTrans("q0", "virg", ",")
-sin.insereTrans("q0", "att", "=")
-sin.insereTrans("q0", "chavesA", "{")
-sin.insereTrans("q0", "chavesB", "}")
-sin.insereTrans("q0", "sep_func", ".")
-sin.insereTrans("q0", "aspas", '"')
-sin.insereTrans("q0", "parenA", "(")
-sin.insereTrans("q0", "parenB", ")")
-
-#Comparadores
-sin.insereTrans("q0", "comp", ">")
-sin.insereTrans("q0", "comp", "<")
-sin.insereTrans("att", "comp_final", "=")
-sin.insereTrans("comp", "comp_final", "=")
-
-#Operacoes
-sin.insereTrans("q0", "op", "+")
-sin.insereTrans("q0", "opMenos", "-")
-sin.insereTrans("q0", "op", "*")
-sin.insereTrans("op", "pot", "*")
-sin.insereTrans("q0", "op", "/")
-sin.insereTrans("q0", "logUn", "!")
-sin.insereTrans("q0", "logBin", "&")
-sin.insereTrans("q0", "logBin", "|")
-
-#Numeros
-sin.insereTrans("q0", "num", "0-9")
-sin.insereTrans("num", "num", "0-9")
-
-#Seta estado inicial
-sin.setInicial("q0")
+sin.insereReservada("io.write")
+sin.insereReservada("io.read")
 
 #Insere delimitadores
 sin.insereDelimitador(" ")
-# sin.insereDelimitador("\n")
-
-#nome da regra e lista
-sin.insereRegra('A', [('N', 'B')])
-sin.insereRegra('B', [('T', 'id'), ('T', 'oi')])
-
 
 #Le do arquivo
 sin.le_token()
-print sin.executaRegra('A')
+if sin.executaRegra('prog'):
+    print 'Codigo correto'
+else:
+    raise Exception('ERRO - Sintatico', sin.tk, sin.linha_atual, sin.col_atual)
 	
 		
 '''

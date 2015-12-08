@@ -22,7 +22,7 @@ class Automato(object):
 
 	#Retorna verdadeiro se conseguiu inserir
 	def insereTrans(self, est1, est2, simbolo):
-		if len(simbolo) > 1:
+		if len(simbolo) > 2:
 			for i in self.char_range(simbolo[0], simbolo[2]):
 				self.trans.append((est1, est2, i))
 		elif est1 in self.estados and est2 in self.estados:
