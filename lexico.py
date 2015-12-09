@@ -44,15 +44,15 @@ class Lexico(object):
 		#cria os tokens
 		for i in range(self.col_atual, len(self.arq[self.linha_atual])):
 			aux = self.arq[self.linha_atual][self.col_atual]
-			if (aux in self.delimitadores and token != ''):
+			if (aux in self.delimitadores and token != '') and not self.aut.hasTrans(self.aut.returnAtual(), aux):
 				if self.aut.isFinal():
 					if token in self.reservadas:
-						return (token, "RES")
+						return (token, token.upper())
 					else:						
 						return (token, self.aut.returnAtual())
 
 				else:
-					raise Exception('ERRO - Lexico, identificador invalido', self.linha_atual, self.col_atual)
+					raise Exception('ERRO - Lexico, identificador invalido', self.linha_atual+1, self.col_atual+1)
 
 			else:
 				valid = True
@@ -65,11 +65,11 @@ class Lexico(object):
 					if not valid:
 						if self.aut.isFinal():
 							if token in self.reservadas:
-								return (token, "RES")
+								return (token, token.upper())
 							else:
 								return (token, self.aut.returnAtual())
 						else:
-							raise Exception('ERRO - Lexico, estado nao eh final', self.linha_atual, self.col_atual)
+							raise Exception('ERRO - Lexico, estado nao eh final', self.linha_atual+1, self.col_atual+1)
 
 				self.col_atual += 1
 
@@ -77,11 +77,11 @@ class Lexico(object):
 		self.linha_atual += 1
 		if self.aut.isFinal():
 			if token in self.reservadas:
-				return (token, "RES")
+				return (token, token.upper())
 			else:
 				return (token, self.aut.returnAtual())
 		else:
-			raise Exception('ERRO - Lexico, identificador invalido', self.linha_atual, self.col_atual)
+			raise Exception('ERRO - Lexico, identificador invalido', self.linha_atual+1, self.col_atual+1)
 
 
 

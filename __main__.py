@@ -3,6 +3,8 @@ import networkx as nx
 import matplotlib.pyplot as plt
 
 sin = Sintatico("inputs.in", debugging=True)
+plotter = False
+
 edge_labels = {}
 
 #READ GRAMATICA FROM FILE
@@ -15,6 +17,8 @@ auto    = fauto.readlines()
 #Example: prog -> listcmd <EOF>
 #Nome da regra -> valores (entre <> sao terminais)
 for i in grammar:
+    if len(i) <= 1:
+        continue
     i = i.split()
     regra = []
     for j in range(2, len(i)):
@@ -37,6 +41,8 @@ G = nx.Graph()
 read_estados = False
 read_trans   = False
 for i in auto:
+    if len(i) <= 1:
+        continue
     #troca se esta lendo estados ou transicoes
     if i == '<-- Lista de estados -->\n':
         read_estados = True
@@ -65,32 +71,36 @@ for i in auto:
     elif read_trans:
         i = i.split()
         for j in range(2, len(i)):
-            sin.insereTrans(i[0], i[1], i[j])
+            if i[j] == 'blank':
+                sin.insereTrans(i[0], i[1], ' ')
+            else:
+                sin.insereTrans(i[0], i[1], i[j])
 
         G.add_edge(i[0], i[1])
         edge_labels.update({(i[0], i[1]): i[j]})
 
-node_size=300
-node_color='blue'
-node_alpha=0.3
-node_text_size=10
-edge_color='blue'
-edge_alpha=0.3
-edge_tickness=1
-edge_text_pos=0.3
-text_font='sans-serif'
+if plotter:
+    node_size=300
+    node_color='blue'
+    node_alpha=0.3
+    node_text_size=10
+    edge_color='blue'
+    edge_alpha=0.3
+    edge_tickness=1
+    edge_text_pos=0.3
+    text_font='sans-serif'
 
-graph_pos=nx.spring_layout(G)
-nx.draw_networkx_nodes(G,graph_pos,node_size=node_size, 
-                           alpha=node_alpha, node_color=node_color)
-nx.draw_networkx_edges(G,graph_pos,width=edge_tickness,
-                           alpha=edge_alpha,edge_color=edge_color)
-nx.draw_networkx_labels(G, graph_pos,font_size=node_text_size,
-                            font_family=text_font)
-nx.draw_networkx_edge_labels(G, graph_pos, edge_labels=edge_labels,
-                            label_pos=edge_text_pos)
+    graph_pos=nx.spring_layout(G)
+    nx.draw_networkx_nodes(G,graph_pos,node_size=node_size, 
+                               alpha=node_alpha, node_color=node_color)
+    nx.draw_networkx_edges(G,graph_pos,width=edge_tickness,
+                               alpha=edge_alpha,edge_color=edge_color)
+    nx.draw_networkx_labels(G, graph_pos,font_size=node_text_size,
+                                font_family=text_font)
+    nx.draw_networkx_edge_labels(G, graph_pos, edge_labels=edge_labels,
+                                label_pos=edge_text_pos)
 
-plt.show()
+    plt.show()
 
 #Palavras reservadas
 sin.insereReservada("if")
@@ -110,7 +120,7 @@ sin.le_token()
 if sin.executaRegra('prog'):
     print 'Codigo correto'
 else:
-    raise Exception('ERRO - Sintatico', sin.tk, sin.linha_atual, sin.col_atual)
+    raise Exception('ERRO - Sintatico', sin.tk, sin.linha_atual+1, sin.col_atual+1)
 	
 		
 '''

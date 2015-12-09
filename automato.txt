@@ -1,0 +1,36 @@
+<-- Lista de estados -->
+(q0) <PAL> <PAL1> q3 <ATRIB> <OPREL> <ATRIB> <NUM> <NUM1>
+<POT> <MM> <OPAND> <OPOR> q19 <STRING> <ACHAV>
+<FCHAV> <APAR> <FPAR> <QL> <VIRG> <DIV> <MULT> <POT> <NOT>
+<MAIS> <MENOS>
+
+<-- Lista de transicoes -->
+q0 PAL a-z
+PAL PAL a-z 0-9 _
+PAL q3 .
+q3 PAL1 a-z
+PAL1 PAL1 a-z
+q0 NUM 0-9
+NUM NUM 0-9
+NUM NUM1 .
+NUM1 NUM1 0-9
+q0 DIV /
+q0 MAIS +
+q0 MENOS -
+q0 MULT *
+MULT POT *
+q0 ATRIB =
+ATRIB OPREL =
+q0 MM < >
+q0 NOT !
+q0 OPAND &
+q0 OPOR |
+q0 q19 "
+q19 q19 a-z 0-9 _ - blank + - ! & | =
+q19 STRING "
+q0 ACHAV {
+q0 FCHAV }
+q0 APAR (
+q0 FPAR )
+q0 QL \n
+q0 VIRG ,

@@ -56,6 +56,8 @@ class Sintatico(Lexico):
 					elif self.regras[idx_now][i][0] == 'T':
 						#Check if token is correct
 						if self.regras[idx_now][i][1] == self.tk[1]:
+							if self.debugging:
+								print 'Consumido: ', nome_regra, ' - ', self.tk
 							self.le_token()
 							last_rule = True
 

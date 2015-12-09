@@ -1,2 +1,10 @@
-local abc
-djabs
+col = 32
+li = col*3 + 3
+z = col > li
+x = io.read()
+if z{
+io.write("z is true")
+}else{
+z = -z
+io.write("z is true")
+}
