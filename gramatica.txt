@@ -1,13 +1,11 @@
 prog -> listcmd <EOF>
-listcmd -> cmd <QL> listcmd
+listcmd -> cmd listcmd
 listcmd -> lambda
 
-cmd -> <QL>
-cmd -> <LOCAL> pal datrib
-cmd -> pal X
+cmd -> <LOCAL> pal datrib <QL>
+cmd -> pal X <QL>
 cmd -> cond
-cmd -> esc
-
+cmd -> esc <QL>
 
 datrib -> <ATRIB> exp
 datrib -> lambda
@@ -20,10 +18,10 @@ att -> <ATRIB>
 Y -> exp
 Y -> <IO.READ> <APAR> <FPAR>
 
-cond -> <IF> exp <ACHAV> <QL> listcmd <FCHAV> cond1
+cond -> <IF> exp <ACHAV> <QL> listcmd <FCHAV> <QL> cond1
 cond1 -> cond2
 cond1 -> lambda
-cond2 -> <ELSE> <ACHAV> <QL> listcmd <FCHAV>
+cond2 -> <ELSE> <ACHAV> <QL> listcmd <FCHAV> <QL>
 
 esc -> <IO.WRITE> <APAR> arg <FPAR>
 arg -> <STRING> arg2
@@ -35,16 +33,20 @@ exp -> exp1 expC
 expC -> opcomp exp1
 expC -> lambda
 exp1 -> expA
-exp1 -> expL
+//exp1 -> expL
 
-expL -> <TRUE>
-expL -> <FALSE>
-expL -> <NIL>
+//expL -> <TRUE>
+//expL -> <FALSE>
+//expL -> <NIL>
 
 expA -> T
 T -> num T1
 T -> pal T2
+T -> <TRUE> T1
+T -> <FALSE> T1
+T -> <NIL> T1
 T -> <MENOS>  T
+T -> <NOT> T
 T -> <APAR> T <FPAR>
 T1 -> opar T
 T1 -> lambda
@@ -55,6 +57,9 @@ opar -> <DIV>
 opar -> <MULT>
 opar -> <MENOS>
 opar -> <MAIS>
+opar -> <POT>
+opar -> <OPOR>
+opar -> <OPAND>
 
 opcomp -> <MM>
 opcomp -> <OPREL>
@@ -63,7 +68,4 @@ pal -> <PAL1>
 pal -> <PAL>
 num -> <NUM1>
 num -> <NUM>
-
-
-
 
