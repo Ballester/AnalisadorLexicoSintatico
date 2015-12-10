@@ -33,15 +33,10 @@ exp -> exp1 expC
 expC -> opcomp exp1
 expC -> lambda
 exp1 -> expA
-//exp1 -> expL
-
-//expL -> <TRUE>
-//expL -> <FALSE>
-//expL -> <NIL>
 
 expA -> T
 T -> num T1
-T -> pal T2
+T -> pal T1
 T -> <TRUE> T1
 T -> <FALSE> T1
 T -> <NIL> T1
@@ -50,8 +45,6 @@ T -> <NOT> T
 T -> <APAR> T <FPAR>
 T1 -> opar T
 T1 -> lambda
-T2 -> opar T
-T2 -> lambda
 
 opar -> <DIV>
 opar -> <MULT>
